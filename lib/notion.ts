@@ -26,6 +26,7 @@ const MOCK_DATA: AgentMapEntry[] = [
     updatedAt: "2026-04-07",
     agentCount: 9,
     structureType: "マルチPM・ハーネス",
+    tags: ["マルチPM・ハーネス", "MCP統合型", "並列分散型", "自律ループ型", "ヒューマンインザループ"],
     todayTokens: 1344358,
     weekTokens: 6454982,
     mcpServers: "notionApi, playwright, obsidian",
