@@ -32,7 +32,7 @@ export default function MemberCard({ entry }: { entry: AgentMapEntry }) {
       <div className="grid grid-cols-3 gap-3">
         <Stat label="agent" value={`${entry.agentCount}`} unit="体" />
         <Stat label="今日" value={formatTokens(entry.todayTokens)} unit="tokens" />
-        <Stat label="今週" value={formatTokens(entry.weekTokens)} unit="tokens" />
+        <Stat label="今月" value={formatTokens(entry.monthTokens)} unit="tokens" />
       </div>
 
       {/* MCP */}

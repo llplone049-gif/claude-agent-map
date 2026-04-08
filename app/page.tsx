@@ -7,7 +7,7 @@ export const revalidate = 300;
 export default async function Home() {
   const entries = await getAgentMaps();
 
-  const totalWeekTokens = entries.reduce((s, e) => s + e.weekTokens, 0);
+  const totalWeekTokens = entries.reduce((s, e) => s + e.monthTokens, 0);
   const totalTodayTokens = entries.reduce((s, e) => s + e.todayTokens, 0);
 
   function fmt(n: number) {
@@ -40,7 +40,7 @@ export default async function Home() {
               <p className="text-[#B8986A] text-xs">tokens</p>
             </div>
             <div>
-              <p className="text-[#9A7A5A] text-xs">チーム 今週</p>
+              <p className="text-[#9A7A5A] text-xs">チーム 今月</p>
               <p className="font-bold text-lg text-[#2D1F0E]">{fmt(totalWeekTokens)}</p>
               <p className="text-[#B8986A] text-xs">tokens</p>
             </div>

@@ -13,7 +13,7 @@ export interface AgentMapEntry {
   structureType: string;
   tags: string[];
   todayTokens: number;
-  weekTokens: number;
+  monthTokens: number;
   mcpServers: string;
   mermaid: string;
   isPublic: boolean;
@@ -28,7 +28,7 @@ const MOCK_DATA: AgentMapEntry[] = [
     structureType: "マルチPM・ハーネス",
     tags: ["マルチPM・ハーネス", "MCP統合型", "並列分散型", "自律ループ型", "ヒューマンインザループ"],
     todayTokens: 1344358,
-    weekTokens: 6454982,
+    monthTokens: 6454982,
     mcpServers: "notionApi, playwright, obsidian",
     mermaid: `graph TD
     User((ユーザー))
@@ -74,7 +74,7 @@ export async function getAgentMaps(): Promise<AgentMapEntry[]> {
         property: "公開設定",
         select: { equals: "公開" },
       },
-      sorts: [{ property: "今週のトークン", direction: "descending" }],
+      sorts: [{ property: "今月のトークン", direction: "descending" }],
     });
 
     return response.results
@@ -107,7 +107,7 @@ export async function getAgentMaps(): Promise<AgentMapEntry[]> {
           structureType: sel("構造タイプ"),
           tags,
           todayTokens: num("今日のトークン"),
-          weekTokens: num("今週のトークン"),
+          monthTokens: num("今月のトークン"),
           mcpServers: rt("MCPサーバー"),
           mermaid: rt("Mermaid図"),
           isPublic: sel("公開設定") === "公開",
