@@ -25,7 +25,7 @@ export default function TagBadge({ tag }: { tag: string }) {
           onClick={() => setOpen(false)}
         >
           <div
-            className="bg-[#FAF6EE] border border-[#E2D0BA] rounded-2xl p-6 max-w-sm w-full shadow-xl"
+            className="bg-[#FAF9F5] border border-[#E8E6DC] rounded-2xl p-6 max-w-sm w-full shadow-xl"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-start justify-between mb-4">
@@ -34,13 +34,13 @@ export default function TagBadge({ tag }: { tag: string }) {
               </span>
               <button
                 onClick={() => setOpen(false)}
-                className="text-[#9A7A5A] hover:text-[#2D1F0E] text-xl font-bold leading-none ml-4"
+                className="text-[#5E5D59] hover:text-[#141413] text-xl font-bold leading-none ml-4"
               >
                 ×
               </button>
             </div>
-            <p className="text-[#7A5C3A] text-xs mb-3">{info.condition}</p>
-            <p className="text-[#2D1F0E] text-sm leading-relaxed">{info.desc}</p>
+            <p className="text-[#4D4C48] text-xs mb-3">{info.condition}</p>
+            <p className="text-[#141413] text-sm leading-relaxed">{info.desc}</p>
           </div>
         </div>
       )}

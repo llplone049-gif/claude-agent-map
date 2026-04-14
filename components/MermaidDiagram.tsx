@@ -23,8 +23,6 @@ const LABEL_MAP: Record<string, string> = {
   "allight-writer": "ALLIGHT.ライター",
   "ainstein-image-designer": "AI.NSTEIN画像プロンプト設計",
   "allight-image-designer": "ALLIGHT.画像プロンプト設計",
-  researcher: "リサーチャー",
-  writer: "ライター",
 };
 
 interface AgentDetail {
@@ -125,18 +123,18 @@ const MERMAID_THEME = {
   startOnLoad: false,
   theme: "base" as const,
   themeVariables: {
-    primaryColor: "#F0DEC4",
-    primaryTextColor: "#2D1F0E",
-    primaryBorderColor: "#D4671B",
-    lineColor: "#A07850",
-    background: "#FAF6EE",
-    mainBkg: "#F0DEC4",
-    nodeBorder: "#D4671B",
-    clusterBkg: "#F0E4D0",
-    titleColor: "#2D1F0E",
-    edgeLabelBackground: "#F5EDE0",
-    secondaryColor: "#F5E6D3",
-    tertiaryColor: "#EDD9BE",
+    primaryColor: "#F0EEE6",
+    primaryTextColor: "#141413",
+    primaryBorderColor: "#C96442",
+    lineColor: "#5E5D59",
+    background: "#FAF9F5",
+    mainBkg: "#F0EEE6",
+    nodeBorder: "#C96442",
+    clusterBkg: "#F0EEE6",
+    titleColor: "#141413",
+    edgeLabelBackground: "#F5F4ED",
+    secondaryColor: "#F5F4ED",
+    tertiaryColor: "#F0EEE6",
   },
 };
 
@@ -236,14 +234,14 @@ export default function MermaidDiagram({ chart, id, agentJson }: MermaidDiagramP
           onClick={handleClose}
         >
           <div
-            className="bg-[#FAF6EE] rounded-2xl p-8 max-w-5xl w-full max-h-[90vh] overflow-auto shadow-2xl"
+            className="bg-[#FAF9F5] rounded-2xl p-8 max-w-5xl w-full max-h-[90vh] overflow-auto shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex justify-between items-center mb-4">
-              <span className="text-[#7A5C3A] text-sm font-medium">エージェント構造マップ</span>
+              <span className="text-[#4D4C48] text-sm font-medium">エージェント構造マップ</span>
               <button
                 onClick={handleClose}
-                className="text-[#7A5C3A] hover:text-[#2D1F0E] text-xl font-bold leading-none"
+                className="text-[#4D4C48] hover:text-[#141413] text-xl font-bold leading-none"
               >
                 ×
               </button>
@@ -259,27 +257,27 @@ export default function MermaidDiagram({ chart, id, agentJson }: MermaidDiagramP
           className="fixed z-[9999] pointer-events-none"
           style={{ left: tooltip.x + 16, top: tooltip.y - 8 }}
         >
-          <div className="bg-[#2D1F0E] text-[#FAF6EE] rounded-xl px-4 py-3 shadow-xl max-w-xs text-sm">
+          <div className="bg-[#141413] text-[#FAF9F5] rounded-xl px-4 py-3 shadow-xl max-w-xs text-sm">
             <div className="flex items-center gap-2 mb-2">
-              <p className="font-bold text-[#F0DEC4]">{tooltip.detail.roleName}</p>
+              <p className="font-bold text-[#F0EEE6]">{tooltip.detail.roleName}</p>
               {tooltip.detail.model && (
-                <span className="text-xs bg-[#3D2F1E] text-[#C8A882] border border-[#5A4030] px-1.5 py-0.5 rounded">
+                <span className="text-xs bg-[#30302E] text-[#87867F] border border-[#30302E] px-1.5 py-0.5 rounded">
                   {tooltip.detail.model}
                 </span>
               )}
             </div>
-            <p className="text-[#D4B896] text-xs leading-relaxed mb-2">
+            <p className="text-[#B0AEA5] text-xs leading-relaxed mb-2">
               {tooltip.detail.description}
             </p>
             {tooltip.detail.tools.length > 0 && (
               <div className="mt-1">
-                <span className="text-[#B8986A] text-xs">ツール: </span>
+                <span className="text-[#87867F] text-xs">ツール: </span>
                 <span className="text-xs">{tooltip.detail.tools.join(", ")}</span>
               </div>
             )}
             {tooltip.detail.calls.length > 0 && (
               <div className="mt-0.5">
-                <span className="text-[#B8986A] text-xs">呼び出し先: </span>
+                <span className="text-[#87867F] text-xs">呼び出し先: </span>
                 <span className="text-xs">{tooltip.detail.calls.join(", ")}</span>
               </div>
             )}
