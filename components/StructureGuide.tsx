@@ -6,7 +6,7 @@ import { STRUCTURE_LIST } from "@/lib/structures";
 const SECTIONS = [
   {
     label: "── 主構造タイプ（1つ自動判定）──",
-    tags: ["マルチPM・ハーネス", "ハーネス構造", "マルチエージェント", "シンプル"],
+    tags: ["フル・ハーネス設計", "ハーネス設計", "マルチエージェント", "シンプル"],
   },
   {
     label: "── 追加タグ（複数付与あり）──",

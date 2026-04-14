@@ -7,16 +7,16 @@ export interface StructureInfo {
 
 export const STRUCTURE_LIST: StructureInfo[] = [
   {
-    tag: "マルチPM・ハーネス",
+    tag: "フル・ハーネス設計",
     color: "bg-orange-100 text-orange-800 border-orange-300",
-    condition: "条件:エージェント7体以上、PM・ライター・リサーチャーなどがそろっている",
-    desc: "プロジェクトごとにPMが存在し、リサーチ→執筆→品質チェックの一連フローを自律実行できる最上位構造。",
+    condition: "条件:エージェント7体以上、複数の指揮層とサブエージェントが組み合わさっている",
+    desc: "指揮役→複数PM→専門エージェントという多層ハーネス構造。各層が自律的に動き、Claude Codeで実現できる最上位のエージェント設計。",
   },
   {
-    tag: "ハーネス構造",
+    tag: "ハーネス設計",
     color: "bg-amber-100 text-amber-800 border-amber-300",
-    condition: "条件:PM＋ライターなどがいる、または呼び出し先が2体以上あるなど",
-    desc: "指揮役エージェントが複数の専門エージェントを束ねて動かす構造。部分的な自律化が進んでいる状態。",
+    condition: "条件:1つの指揮役エージェントが2体以上のサブエージェントを呼び出す構造",
+    desc: "1つの指揮役が複数の専門エージェントを束ねるハーネス構造。Claude Code公式が推奨するエージェント設計パターン。",
   },
   {
     tag: "マルチエージェント",

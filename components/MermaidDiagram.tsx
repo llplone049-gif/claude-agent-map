@@ -3,22 +3,26 @@
 import { useEffect, useRef, useState } from "react";
 import type { Dispatch, SetStateAction } from "react";
 
+export type AgentJsonEntry = { role: string; model?: string };
+
 interface MermaidDiagramProps {
   chart: string;
   id: string;
+  agentJson?: Record<string, AgentJsonEntry>;
 }
 
+// agentJsonが未指定のときのフォールバック用ラベルマップ
 const LABEL_MAP: Record<string, string> = {
-  secretary: "AI秘書",
-  planner: "プランナー",
+  secretary: "AI秘書・司令塔",
+  planner: "全PJ横断プランナー",
   "ainstein-pm": "AI.NSTEIN PM",
   "allight-pm": "ALLIGHT. PM",
-  "ainstein-researcher": "AIリサーチャー",
-  "allight-researcher": "健康リサーチャー",
+  "ainstein-researcher": "AI.NSTEIN専用リサーチャー",
+  "allight-researcher": "ALLIGHT.専用リサーチャー",
   "ainstein-writer": "AI.NSTEINライター",
   "allight-writer": "ALLIGHT.ライター",
-  "ainstein-image-designer": "AI.NSTEIN画像",
-  "allight-image-designer": "ALLIGHT.画像",
+  "ainstein-image-designer": "AI.NSTEIN画像プロンプト設計",
+  "allight-image-designer": "ALLIGHT.画像プロンプト設計",
   researcher: "リサーチャー",
   writer: "ライター",
 };
@@ -82,15 +86,38 @@ const AGENT_DETAILS: Record<string, AgentDetail> = {
   },
 };
 
-function applyLabelMap(chart: string): string {
+// Mermaidのノードラベルを役割+モデルに置換する
+// 対応フォーマット:
+//   scanner旧: agentname[agentname]
+//   scanner新: agentname["agentname\nshortdesc"]
+function applyLabelMap(
+  chart: string,
+  agentJson?: Record<string, AgentJsonEntry>
+): string {
   let result = chart;
-  for (const [agentName, roleName] of Object.entries(LABEL_MAP)) {
-    const escaped = agentName.replace(/-/g, "\\-");
+
+  const allAgents = new Set([
+    ...Object.keys(LABEL_MAP),
+    ...(agentJson ? Object.keys(agentJson) : []),
+  ]);
+
+  for (const agentName of allAgents) {
+    const escaped = agentName.replace(/-/g, "\\-").replace(/\./g, "\\.");
+    const role  = agentJson?.[agentName]?.role ?? LABEL_MAP[agentName];
+    const model = agentJson?.[agentName]?.model;
+
+    if (!role) continue;
+
+    // ノードには役割名のみ表示（モデルはツールチップに表示）
+    const label = role;
+
+    // [name] 形式と ["name\n..."] 形式の両方にマッチ
     result = result.replace(
-      new RegExp(`\\[${escaped}\\]`, "g"),
-      `["${roleName}"]`
+      new RegExp(`\\b${escaped}\\[(?:[^\\]"]*|"[^"]*")*\\]`, "g"),
+      `${agentName}["${label}"]`
     );
   }
+
   return result;
 }
 
@@ -116,7 +143,7 @@ const MERMAID_THEME = {
 interface TooltipState {
   x: number;
   y: number;
-  detail: AgentDetail & { roleName: string };
+  detail: AgentDetail & { roleName: string; model?: string };
 }
 
 // Mermaid SVGのノードIDからエージェント名を抽出
@@ -128,22 +155,24 @@ function extractAgentName(elementId: string): string {
 
 function addTooltipListeners(
   container: HTMLDivElement,
-  setTooltip: Dispatch<SetStateAction<TooltipState | null>>
+  setTooltip: Dispatch<SetStateAction<TooltipState | null>>,
+  agentJson?: Record<string, AgentJsonEntry>
 ) {
-  // Mermaid v11 は "mermaid-<id>-flowchart-<name>-<number>" 形式のIDを使う
   const nodes = container.querySelectorAll('g[id*="flowchart-"]');
   nodes.forEach((node) => {
     const rawId = node.getAttribute("id") ?? "";
     const agentName = extractAgentName(rawId);
-    const roleName = LABEL_MAP[agentName];
-    const detail = AGENT_DETAILS[agentName];
+    // agentJsonがあればそちらの役割名を優先
+    const roleName = agentJson?.[agentName]?.role ?? LABEL_MAP[agentName];
+    const model    = agentJson?.[agentName]?.model;
+    const detail   = AGENT_DETAILS[agentName];
     if (!roleName || !detail) return;
 
     (node as HTMLElement).style.cursor = "help";
 
     node.addEventListener("mouseenter", (e) => {
       const me = e as MouseEvent;
-      setTooltip({ x: me.clientX, y: me.clientY, detail: { ...detail, roleName } });
+      setTooltip({ x: me.clientX, y: me.clientY, detail: { ...detail, roleName, model } });
     });
     node.addEventListener("mousemove", (e) => {
       const me = e as MouseEvent;
@@ -153,7 +182,7 @@ function addTooltipListeners(
   });
 }
 
-export default function MermaidDiagram({ chart, id }: MermaidDiagramProps) {
+export default function MermaidDiagram({ chart, id, agentJson }: MermaidDiagramProps) {
   const ref = useRef<HTMLDivElement>(null);
   const modalContentRef = useRef<HTMLDivElement>(null);
   const [svg, setSvg] = useState("");
@@ -162,7 +191,7 @@ export default function MermaidDiagram({ chart, id }: MermaidDiagramProps) {
 
   useEffect(() => {
     if (!chart) return;
-    const processed = applyLabelMap(chart);
+    const processed = applyLabelMap(chart, agentJson);
     import("mermaid").then((m) => {
       m.default.initialize(MERMAID_THEME);
       m.default
@@ -170,20 +199,20 @@ export default function MermaidDiagram({ chart, id }: MermaidDiagramProps) {
         .then(({ svg: rendered }) => {
           if (ref.current) {
             ref.current.innerHTML = rendered;
-            addTooltipListeners(ref.current, setTooltip);
+            addTooltipListeners(ref.current, setTooltip, agentJson);
           }
           setSvg(rendered);
         })
         .catch(() => {});
     });
-  }, [chart, id]);
+  }, [chart, id, agentJson]);
 
   // モーダルが開いたらSVGを挿入してリスナーを追加
   useEffect(() => {
     if (!isOpen || !svg || !modalContentRef.current) return;
     modalContentRef.current.innerHTML = svg;
-    addTooltipListeners(modalContentRef.current, setTooltip);
-  }, [isOpen, svg]);
+    addTooltipListeners(modalContentRef.current, setTooltip, agentJson);
+  }, [isOpen, svg, agentJson]);
 
   const handleClose = () => {
     setIsOpen(false);
@@ -231,7 +260,14 @@ export default function MermaidDiagram({ chart, id }: MermaidDiagramProps) {
           style={{ left: tooltip.x + 16, top: tooltip.y - 8 }}
         >
           <div className="bg-[#2D1F0E] text-[#FAF6EE] rounded-xl px-4 py-3 shadow-xl max-w-xs text-sm">
-            <p className="font-bold text-[#F0DEC4] mb-2">{tooltip.detail.roleName}</p>
+            <div className="flex items-center gap-2 mb-2">
+              <p className="font-bold text-[#F0DEC4]">{tooltip.detail.roleName}</p>
+              {tooltip.detail.model && (
+                <span className="text-xs bg-[#3D2F1E] text-[#C8A882] border border-[#5A4030] px-1.5 py-0.5 rounded">
+                  {tooltip.detail.model}
+                </span>
+              )}
+            </div>
             <p className="text-[#D4B896] text-xs leading-relaxed mb-2">
               {tooltip.detail.description}
             </p>

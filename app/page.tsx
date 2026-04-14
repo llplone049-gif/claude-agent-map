@@ -4,11 +4,26 @@ import StructureGuide from "@/components/StructureGuide";
 
 export const revalidate = 300;
 
-export default async function Home() {
-  const entries = await getAgentMaps();
+async function getExchangeRate(): Promise<number> {
+  try {
+    const res = await fetch("https://open.er-api.com/v6/latest/USD", {
+      next: { revalidate: 3600 },
+    });
+    const data = await res.json();
+    return typeof data.rates?.JPY === "number" ? data.rates.JPY : 150;
+  } catch {
+    return 150;
+  }
+}
 
-  const totalWeekTokens = entries.reduce((s, e) => s + e.monthTokens, 0);
+export default async function Home() {
+  const [entries, exchangeRate] = await Promise.all([
+    getAgentMaps(),
+    getExchangeRate(),
+  ]);
+
   const totalTodayTokens = entries.reduce((s, e) => s + e.todayTokens, 0);
+  const totalMonthTokens = entries.reduce((s, e) => s + e.monthTokens, 0);
 
   function fmt(n: number) {
     if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`;
@@ -41,7 +56,7 @@ export default async function Home() {
             </div>
             <div>
               <p className="text-[#9A7A5A] text-xs">チーム 今月</p>
-              <p className="font-bold text-lg text-[#2D1F0E]">{fmt(totalWeekTokens)}</p>
+              <p className="font-bold text-lg text-[#2D1F0E]">{fmt(totalMonthTokens)}</p>
               <p className="text-[#B8986A] text-xs">tokens</p>
             </div>
             <div>
@@ -69,7 +84,7 @@ export default async function Home() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
             {entries.map((entry) => (
-              <MemberCard key={entry.id} entry={entry} />
+              <MemberCard key={entry.id} entry={entry} exchangeRate={exchangeRate} />
             ))}
           </div>
         )}
