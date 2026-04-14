@@ -2,7 +2,7 @@ import { getAgentMaps } from "@/lib/notion";
 import MemberCard from "@/components/MemberCard";
 import StructureGuide from "@/components/StructureGuide";
 
-export const revalidate = 300;
+export const revalidate = 60;
 
 export default async function Home() {
   const entries = await getAgentMaps();
