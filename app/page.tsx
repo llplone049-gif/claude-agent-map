@@ -4,32 +4,8 @@ import StructureGuide from "@/components/StructureGuide";
 
 export const revalidate = 300;
 
-async function getExchangeRate(): Promise<number> {
-  try {
-    const res = await fetch("https://open.er-api.com/v6/latest/USD", {
-      next: { revalidate: 3600 },
-    });
-    const data = await res.json();
-    return typeof data.rates?.JPY === "number" ? data.rates.JPY : 150;
-  } catch {
-    return 150;
-  }
-}
-
 export default async function Home() {
-  const [entries, exchangeRate] = await Promise.all([
-    getAgentMaps(),
-    getExchangeRate(),
-  ]);
-
-  const totalTodayTokens = entries.reduce((s, e) => s + e.todayTokens, 0);
-  const totalMonthTokens = entries.reduce((s, e) => s + e.monthTokens, 0);
-
-  function fmt(n: number) {
-    if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`;
-    if (n >= 1_000) return `${(n / 1_000).toFixed(0)}k`;
-    return String(n);
-  }
+  const entries = await getAgentMaps();
 
   return (
     <div className="min-h-screen bg-[#F5EDE0] text-[#2D1F0E]">
@@ -48,22 +24,10 @@ export default async function Home() {
               チームのエージェント構造を可視化・共有する
             </p>
           </div>
-          <div className="flex gap-6 text-right">
-            <div>
-              <p className="text-[#9A7A5A] text-xs">チーム 今日</p>
-              <p className="font-bold text-lg text-[#2D1F0E]">{fmt(totalTodayTokens)}</p>
-              <p className="text-[#B8986A] text-xs">tokens</p>
-            </div>
-            <div>
-              <p className="text-[#9A7A5A] text-xs">チーム 今月</p>
-              <p className="font-bold text-lg text-[#2D1F0E]">{fmt(totalMonthTokens)}</p>
-              <p className="text-[#B8986A] text-xs">tokens</p>
-            </div>
-            <div>
-              <p className="text-[#9A7A5A] text-xs">メンバー</p>
-              <p className="font-bold text-lg text-[#2D1F0E]">{entries.length}</p>
-              <p className="text-[#B8986A] text-xs">人</p>
-            </div>
+          <div>
+            <p className="text-[#9A7A5A] text-xs">メンバー</p>
+            <p className="font-bold text-lg text-[#2D1F0E]">{entries.length}</p>
+            <p className="text-[#B8986A] text-xs">人</p>
           </div>
         </div>
       </header>
@@ -84,7 +48,7 @@ export default async function Home() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
             {entries.map((entry) => (
-              <MemberCard key={entry.id} entry={entry} exchangeRate={exchangeRate} />
+              <MemberCard key={entry.id} entry={entry} />
             ))}
           </div>
         )}

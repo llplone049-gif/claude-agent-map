@@ -12,15 +12,8 @@ export interface AgentMapEntry {
   agentCount: number;
   structureType: string;
   tags: string[];
-  todayTokens: number;
-  monthTokens: number;
-  // プラン使用量・追加使用量（Notionに追加が必要なフィールド）
-  planTodayTokens: number;
-  planMonthTokens: number;
-  addTodayTokens: number;
-  addMonthTokens: number;
-  plan: string;      // 契約プラン e.g. "Pro", "Max 5x"
-  model: string;     // 使用モデル e.g. "Sonnet", "Opus", "Haiku"（追加使用料のJPY計算に使用）
+  capabilities: string[]; // できること（自動化している業務）
+  model: string;     // 使用モデル e.g. "Sonnet", "Opus", "Haiku"
   mcpServers: string;
   mermaid: string;
   agentJson: string; // エージェントJSON（役割・モデル情報のJSON文字列）
@@ -35,15 +28,9 @@ const MOCK_DATA: AgentMapEntry[] = [
     agentCount: 9,
     structureType: "フル・ハーネス設計",
     tags: ["フル・ハーネス設計", "MCP統合型", "並列分散型", "自律ループ型", "ヒューマンインザループ"],
-    todayTokens: 1344358,
-    monthTokens: 6454982,
-    planTodayTokens: 1200000,
-    planMonthTokens: 5000000,
-    addTodayTokens: 144358,
-    addMonthTokens: 1454982,
-    plan: "Max 5x",
+    capabilities: ["note記事作成", "SNSリサーチ", "議事録自動登録", "画像プロンプト生成"],
     model: "Sonnet",
-    mcpServers: "notionApi, playwright, obsidian",
+    mcpServers: "notionApi: タスク管理・議事録・エージェントマップ保存, playwright: Webブラウザ操作・スクレイピング, obsidian: インスピレーションメモの自動取り込み",
     mermaid: `graph TD
     User((ユーザー))
     User --> secretary[secretary]
@@ -132,15 +119,7 @@ export async function getAgentMaps(): Promise<AgentMapEntry[]> {
           agentCount,
           structureType,
           tags,
-          todayTokens: num("今日のトークン"),
-          monthTokens: num("今月のトークン"),
-          // 新フィールド（Notionに追加が必要）
-          // ※フィールド名が異なる場合はここを修正してください
-          planTodayTokens: num("プラン使用量（今日）"),
-          planMonthTokens: num("プラン使用量（今月）"),
-          addTodayTokens: num("追加使用量（今日）"),
-          addMonthTokens: num("追加使用量（今月）"),
-          plan: sel("契約プラン") || rt("契約プラン"),
+          capabilities: rt("できること").split(",").map((s: string) => s.trim()).filter(Boolean),
           model: sel("使用モデル"),
           mcpServers,
           mermaid: rt("Mermaid図"),
