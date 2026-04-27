@@ -3,7 +3,13 @@
 import { useEffect, useRef, useState } from "react";
 import type { Dispatch, SetStateAction } from "react";
 
-export type AgentJsonEntry = { role: string; model?: string };
+export type AgentJsonEntry = {
+  role: string;
+  model?: string;
+  description?: string;
+  tools?: string[];
+  calls?: string[];
+};
 
 interface MermaidDiagramProps {
   chart: string;
@@ -106,13 +112,11 @@ function applyLabelMap(
 
     if (!role) continue;
 
-    // ノードには役割名のみ表示（モデルはツールチップに表示）
-    const label = role;
-
-    // [name] 形式と ["name\n..."] 形式の両方にマッチ
+    // ノードにはエージェント名のみ表示（説明はツールチップに表示）
+    // [name] 形式と ["name\n..."] 形式の両方にマッチしてエージェント名に統一
     result = result.replace(
       new RegExp(`\\b${escaped}\\[(?:[^\\]"]*|"[^"]*")*\\]`, "g"),
-      `${agentName}["${label}"]`
+      `${agentName}["${agentName}"]`
     );
   }
 
@@ -163,7 +167,11 @@ function addTooltipListeners(
     // agentJsonがあればそちらの役割名を優先
     const roleName = agentJson?.[agentName]?.role ?? LABEL_MAP[agentName];
     const model    = agentJson?.[agentName]?.model;
-    const detail   = AGENT_DETAILS[agentName];
+    const detail   = AGENT_DETAILS[agentName] ?? (roleName ? {
+      description: agentJson?.[agentName]?.description ?? "",
+      tools: agentJson?.[agentName]?.tools ?? [],
+      calls: agentJson?.[agentName]?.calls ?? [],
+    } : undefined);
     if (!roleName || !detail) return;
 
     (node as HTMLElement).style.cursor = "help";
