@@ -3,16 +3,25 @@
 import { useState } from "react";
 import { STRUCTURE_LIST } from "@/lib/structures";
 
-const SECTIONS = [
-  {
-    label: "── 主構造タイプ（1つ自動判定）──",
-    tags: ["フル・ハーネス設計", "ハーネス設計", "マルチエージェント", "シンプル"],
-  },
-  {
-    label: "── 追加タグ（複数付与あり）──",
-    tags: ["MCP統合型", "並列分散型", "自律ループ型", "ヒューマンインザループ"],
-  },
-];
+const LEVELS = [...STRUCTURE_LIST.filter((s) => s.level > 0)].sort(
+  (a, b) => a.level - b.level
+);
+const ABILITIES = STRUCTURE_LIST.filter((s) => s.level === 0);
+
+function LevelDots({ level, total = 4 }: { level: number; total?: number }) {
+  return (
+    <div className="flex gap-1">
+      {Array.from({ length: total }).map((_, i) => (
+        <div
+          key={i}
+          className={`w-2 h-2 rounded-full transition-colors ${
+            i < level ? "bg-[#C96442]" : "bg-[#E8E6DC]"
+          }`}
+        />
+      ))}
+    </div>
+  );
+}
 
 export default function StructureGuide() {
   const [open, setOpen] = useState(false);
@@ -23,51 +32,77 @@ export default function StructureGuide() {
         onClick={() => setOpen(true)}
         className="text-xs text-[#C96442] border border-[#C96442] rounded-full px-2.5 py-1 hover:bg-[#C96442] hover:text-white transition-colors font-medium whitespace-nowrap"
       >
-        構造タイプとは？
+        レベルガイド
       </button>
 
       {open && (
         <div
-          className="fixed inset-0 z-50 flex items-start justify-center pt-12 px-6 pb-6 bg-black/50 backdrop-blur-sm overflow-y-auto"
+          className="fixed inset-0 z-50 flex items-start justify-center pt-8 px-4 pb-8 bg-black/50 backdrop-blur-sm overflow-y-auto"
           onClick={() => setOpen(false)}
         >
           <div
-            className="bg-[#FAF9F5] border border-[#E8E6DC] rounded-2xl p-6 max-w-lg w-full shadow-xl"
+            className="bg-[#FAF9F5] border border-[#E8E6DC] rounded-2xl p-6 max-w-2xl w-full shadow-xl"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between mb-5">
-              <h2 className="font-bold text-[#141413] text-lg">構造タイプ一覧</h2>
+            {/* ヘッダー */}
+            <div className="flex items-start justify-between mb-1">
+              <div>
+                <h2 className="font-bold text-[#141413] text-lg">Claude Code 活用レベル</h2>
+                <p className="text-[#87867F] text-xs mt-0.5">エージェント設計の成熟度を4段階で表します</p>
+              </div>
               <button
                 onClick={() => setOpen(false)}
-                className="text-[#5E5D59] hover:text-[#141413] text-xl font-bold leading-none"
+                className="text-[#5E5D59] hover:text-[#141413] text-xl font-bold leading-none ml-4 mt-0.5"
               >
                 ×
               </button>
             </div>
 
-            <div className="flex flex-col gap-6">
-              {SECTIONS.map((section) => (
-                <div key={section.label}>
-                  <p className="text-[#87867F] text-xs mb-3">{section.label}</p>
-                  <div className="flex flex-col gap-4">
-                    {section.tags.map((tag) => {
-                      const info = STRUCTURE_LIST.find((s) => s.tag === tag);
-                      if (!info) return null;
-                      return (
-                        <div key={tag} className="flex flex-col gap-1">
-                          <span className={`self-start text-xs border px-2.5 py-1 rounded-full font-medium ${info.color}`}>
-                            {info.tag}
-                          </span>
-                          <p className="text-[#4D4C48] text-xs">{info.condition}</p>
-                          <p className="text-[#141413] text-sm leading-relaxed">{info.desc}</p>
-                        </div>
-                      );
-                    })}
+            {/* レベル進行チャート */}
+            <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {LEVELS.map((info, idx) => (
+                <div key={info.tag} className="relative">
+                  <div className={`border rounded-xl p-4 ${info.color} border-opacity-60`}>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-xs font-bold opacity-70">Lv.{info.level}</span>
+                      <LevelDots level={info.level} />
+                    </div>
+                    <p className="font-semibold text-sm mb-1">{info.tag}</p>
+                    <p className="text-xs opacity-75 mb-2 leading-relaxed">{info.desc}</p>
+                    <p className="text-xs opacity-60 border-t border-current border-opacity-20 pt-2">
+                      {info.condition}
+                    </p>
+                    {info.nextStep && (
+                      <div className="mt-2 pt-2 border-t border-current border-opacity-20">
+                        <p className="text-xs opacity-70">
+                          <span className="font-medium">Next →</span> {info.nextStep}
+                        </p>
+                      </div>
+                    )}
+                    {idx < LEVELS.length - 1 && (
+                      <div className="hidden sm:block absolute -right-2 top-1/2 -translate-y-1/2 z-10 text-[#C96442] text-lg font-bold">
+                        ›
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}
             </div>
 
+            {/* アビリティ */}
+            <div className="mt-5">
+              <p className="text-[#87867F] text-xs mb-3">── アビリティ（構造レベルとは別に複数付与あり）──</p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {ABILITIES.map((info) => (
+                  <div key={info.tag} className="flex gap-2.5 items-start">
+                    <span className={`text-xs border px-2 py-0.5 rounded-full font-medium whitespace-nowrap mt-0.5 ${info.color}`}>
+                      {info.tag}
+                    </span>
+                    <p className="text-xs text-[#5E5D59] leading-relaxed">{info.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       )}

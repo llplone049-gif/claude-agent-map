@@ -11,22 +11,22 @@ export default async function Home() {
     <div className="min-h-screen bg-[#F5F4ED] text-[#141413]">
       {/* ヘッダー */}
       <header className="border-b border-[#E8E6DC] bg-[#F5F4ED] px-6 py-5">
-        <div className="max-w-6xl mx-auto flex items-center justify-between">
+        <div className="max-w-6xl mx-auto flex items-start justify-between">
           <div>
-            <div className="flex items-center gap-3">
-              <h1 className="text-2xl font-bold tracking-tight">
-                <span className="text-[#C96442]">ClaudeCode</span>
-                <span className="text-[#141413]"> Agent Map</span>
-              </h1>
-              <StructureGuide />
-            </div>
+            <h1 className="text-2xl font-bold tracking-tight">
+              <span className="text-[#C96442]">ClaudeCode</span>
+              <span className="text-[#141413]"> Agent Map</span>
+            </h1>
             <p className="text-[#5E5D59] text-sm mt-0.5">
               チームのエージェント構造を可視化・共有する
             </p>
           </div>
-          <p className="text-[#5E5D59] text-sm">
-            メンバー <span className="font-bold text-[#141413]">{entries.length}</span> 人
-          </p>
+          <div className="flex flex-col items-end gap-2">
+            <StructureGuide />
+            <p className="text-[#5E5D59] text-sm">
+              メンバー <span className="font-bold text-[#141413]">{entries.length}</span> 人
+            </p>
+          </div>
         </div>
       </header>
 
@@ -52,10 +52,6 @@ export default async function Home() {
         )}
       </main>
 
-      {/* フッター */}
-      <footer className="border-t border-[#E8E6DC] px-6 py-4 text-center text-[#87867F] text-xs">
-        Agent Map v1.0 — CC-Company内部ツール。プロンプトやファイル内容は共有されません。
-      </footer>
     </div>
   );
 }

@@ -12,11 +12,12 @@ export default function TagBadge({ tag }: { tag: string }) {
   return (
     <>
       <span
-        className={`text-xs border px-2 py-0.5 rounded-full font-medium whitespace-nowrap cursor-pointer hover:opacity-80 transition-opacity ${colorClass}`}
+        className={`inline-flex items-center gap-1 text-xs border px-2 py-0.5 rounded-full font-medium whitespace-nowrap cursor-pointer hover:opacity-80 transition-opacity ${colorClass}`}
         onClick={() => info && setOpen(true)}
         title={info ? "クリックで詳細表示" : undefined}
       >
         {tag}
+        {info && <span className="opacity-50 text-[10px]">ⓘ</span>}
       </span>
 
       {open && info && (
