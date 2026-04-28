@@ -24,11 +24,9 @@ export default async function Home() {
               チームのエージェント構造を可視化・共有する
             </p>
           </div>
-          <div>
-            <p className="text-[#5E5D59] text-xs">メンバー</p>
-            <p className="font-bold text-lg text-[#141413]">{entries.length}</p>
-            <p className="text-[#87867F] text-xs">人</p>
-          </div>
+          <p className="text-[#5E5D59] text-sm">
+            メンバー <span className="font-bold text-[#141413]">{entries.length}</span> 人
+          </p>
         </div>
       </header>
 

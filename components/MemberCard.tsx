@@ -51,7 +51,9 @@ export default function MemberCard({ entry }: { entry: AgentMapEntry }) {
 
       {/* MCP */}
       {entry.mcpServers && (
-        <div className="flex flex-wrap gap-1.5">
+        <div className="flex flex-col gap-1.5">
+          <p className="text-[#5E5D59] text-xs">MCP連携</p>
+          <div className="flex flex-wrap gap-1.5">
           {entry.mcpServers.split(",").map((s) => {
             const trimmed = s.trim();
             const colonIdx = trimmed.indexOf(": ");
@@ -73,6 +75,18 @@ export default function MemberCard({ entry }: { entry: AgentMapEntry }) {
               </div>
             );
           })}
+          </div>
+        </div>
+      )}
+
+      {/* トークン使用量 */}
+      {(entry.weekTokens > 0 || entry.monthTokens > 0) && (
+        <div className="flex flex-col gap-1.5">
+          <p className="text-[#5E5D59] text-xs">トークン使用量</p>
+          <div className="flex gap-4 text-xs text-[#4D4C48]">
+            <span>今週: <span className="font-medium text-[#141413]">{entry.weekTokens.toLocaleString()}</span></span>
+            <span>今月: <span className="font-medium text-[#141413]">{entry.monthTokens.toLocaleString()}</span></span>
+          </div>
         </div>
       )}
 

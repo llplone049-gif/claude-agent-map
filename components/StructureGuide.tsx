@@ -68,9 +68,6 @@ export default function StructureGuide() {
               ))}
             </div>
 
-            <p className="mt-5 text-[#87867F] text-xs border-t border-[#E8E6DC] pt-4">
-              構造タイプは <code className="bg-[#F0EEE6] px-1 rounded">scanner.py</code> が自動判定します。
-            </p>
           </div>
         </div>
       )}

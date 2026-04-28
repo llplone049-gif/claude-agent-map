@@ -18,6 +18,8 @@ export interface AgentMapEntry {
   mermaid: string;
   agentJson: string; // エージェントJSON（役割・モデル情報のJSON文字列）
   isPublic: boolean;
+  weekTokens: number;
+  monthTokens: number;
 }
 
 const MOCK_DATA: AgentMapEntry[] = [
@@ -31,6 +33,8 @@ const MOCK_DATA: AgentMapEntry[] = [
     capabilities: ["note記事作成", "SNSリサーチ", "議事録自動登録", "画像プロンプト生成"],
     model: "Sonnet",
     mcpServers: "notionApi: タスク管理・議事録・エージェントマップ保存, playwright: Webブラウザ操作・スクレイピング, obsidian: インスピレーションメモの自動取り込み",
+    weekTokens: 0,
+    monthTokens: 0,
     mermaid: `graph TD
     User((ユーザー))
     User --> secretary[secretary]
@@ -125,6 +129,8 @@ export async function getAgentMaps(): Promise<AgentMapEntry[]> {
           mermaid: rt("Mermaid図"),
           agentJson: rt("エージェントJSON"),
           isPublic: sel("公開設定") === "公開",
+          weekTokens: num("今週のトークン"),
+          monthTokens: num("今月のトークン"),
         };
       });
   } catch (e) {
