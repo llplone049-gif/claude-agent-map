@@ -3,20 +3,29 @@
 import { useState } from "react";
 import { STRUCTURE_MAP } from "@/lib/structures";
 
+const ABILITY_EMOJI: Record<string, string> = {
+  "MCP統合型": "🔌",
+  "並列分散型": "⚡",
+  "自律ループ型": "🔄",
+  "ヒューマンインザループ": "👤",
+};
+
 export default function TagBadge({ tag }: { tag: string }) {
   const [open, setOpen] = useState(false);
   const info = STRUCTURE_MAP[tag];
+  const emoji = ABILITY_EMOJI[tag];
 
   const colorClass = info?.color ?? "bg-stone-100 text-stone-600 border-stone-300";
 
   return (
     <>
       <span
-        className={`inline-flex items-center gap-1 text-xs border px-2 py-0.5 rounded font-medium whitespace-nowrap cursor-pointer hover:opacity-75 transition-opacity ${colorClass}`}
+        className={`inline-flex items-center gap-1 text-[11px] border px-2 py-0.5 rounded-md font-medium whitespace-nowrap cursor-pointer hover:opacity-75 transition-opacity ${colorClass}`}
         onClick={() => info && setOpen(true)}
         title={info ? "クリックで詳細表示" : undefined}
       >
-        {tag}
+        {emoji && <span className="text-[11px] leading-none">{emoji}</span>}
+        <span>{tag}</span>
         {info && <span className="opacity-40 text-[10px]">ⓘ</span>}
       </span>
 

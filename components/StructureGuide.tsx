@@ -1,12 +1,26 @@
 "use client";
 
-import { useState, Fragment } from "react";
+import { useState, useEffect, Fragment } from "react";
 import { STRUCTURE_LIST } from "@/lib/structures";
+import { STRUCTURE_GUIDE_OPEN_EVENT } from "./LvBadge";
 
 const LEVELS = [...STRUCTURE_LIST.filter((s) => s.level > 0)].sort(
   (a, b) => a.level - b.level
 );
 const ABILITIES = STRUCTURE_LIST.filter((s) => s.level === 0);
+
+function LevelStructureIcon({ level }: { level: number }) {
+  const src = `/icons/ag-${Math.min(level, 4)}.svg`;
+  const widthClass = level === 1 ? "w-20" : "w-40";
+  const rightClass = level === 1 ? "right-16" : "right-6";
+  return (
+    <img
+      src={src}
+      alt=""
+      className={`absolute ${rightClass} top-1/2 -translate-y-1/2 ${widthClass} h-auto opacity-50 pointer-events-none select-none`}
+    />
+  );
+}
 
 const ABILITY_ICONS: Record<string, string> = {
   "MCP統合型": "🔌",
@@ -39,13 +53,25 @@ function LevelDots({ level, total = 4 }: { level: number; total?: number }) {
 
 export default function StructureGuide() {
   const [open, setOpen] = useState(false);
+  const [highlightLevel, setHighlightLevel] = useState<number | null>(null);
+
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const detail = (e as CustomEvent<{ level?: number }>).detail;
+      setHighlightLevel(detail?.level ?? null);
+      setOpen(true);
+    };
+    window.addEventListener(STRUCTURE_GUIDE_OPEN_EVENT, handler);
+    return () => window.removeEventListener(STRUCTURE_GUIDE_OPEN_EVENT, handler);
+  }, []);
 
   return (
     <>
       <button
-        onClick={() => setOpen(true)}
-        className="text-xs text-[#C96442] border border-[#C96442] rounded-full px-2.5 py-1 hover:bg-[#C96442] hover:text-white transition-colors font-medium whitespace-nowrap"
+        onClick={() => { setHighlightLevel(null); setOpen(true); }}
+        className="inline-flex items-center gap-2 text-sm text-white bg-[#D97757] hover:bg-[#C26642] rounded-full px-5 py-2.5 transition-colors font-medium whitespace-nowrap shadow-sm cursor-pointer"
       >
+        <img src="/icons/level-mascot.svg" alt="" className="h-3.5 w-auto" />
         育成ガイド
       </button>
 
@@ -55,17 +81,18 @@ export default function StructureGuide() {
           onClick={() => setOpen(false)}
         >
           <div
-            className="bg-[#FAF9F5] border border-[#E8E6DC] rounded-2xl overflow-hidden max-w-md w-full shadow-xl"
+            className="bg-[#FAF9F5] border border-[#E8E6DC] rounded-2xl overflow-hidden max-w-3xl w-full shadow-xl"
             onClick={(e) => e.stopPropagation()}
           >
             {/* ヘッダー */}
             <div className="bg-[#141413] px-6 py-5 relative overflow-hidden">
-              <div className="absolute right-4 top-1/2 -translate-y-1/2 text-[8rem] font-black text-white opacity-[0.03] leading-none select-none pointer-events-none">
-                LV
+              <div className="absolute right-12 top-1/2 -translate-y-1/2 flex items-end gap-3 opacity-20 pointer-events-none select-none">
+                <img src="/icons/level-mascot-2.svg" alt="" className="h-12 w-auto" style={{ filter: "brightness(0) invert(0.4)" }} />
+                <img src="/icons/level-mascot-2.svg" alt="" className="h-20 w-auto" style={{ filter: "brightness(0) invert(0.4)" }} />
               </div>
-              <p className="text-[10px] text-[#C96442] font-bold tracking-[0.2em] mb-1">AGENT LEVEL ROAD</p>
-              <h2 className="text-white font-bold text-lg">エージェント育成ロード</h2>
-              <p className="text-[#87867F] text-xs mt-1">構造の成熟度に応じてレベルが上がります</p>
+              <p className="text-[10px] text-[#C96442] font-bold tracking-[0.2em] mb-1">Agent Level Guide</p>
+              <h2 className="text-white font-bold text-lg">エージェント育成ガイド</h2>
+              <p className="text-[#87867F] text-xs mt-1">エージェント構造の成熟度に応じてレベルアップしていきます</p>
               <button
                 onClick={() => setOpen(false)}
                 className="absolute top-4 right-5 text-[#5E5D59] hover:text-white text-xl font-bold leading-none transition-colors"
@@ -74,87 +101,58 @@ export default function StructureGuide() {
               </button>
             </div>
 
-            {/* ステッパー */}
-            <div className="px-6 py-4 border-b border-[#E8E6DC] bg-[#F5F4ED]">
-              <div className="flex items-center">
-                {LEVELS.map((level, idx) => (
-                  <Fragment key={level.level}>
-                    <div className="flex flex-col items-center gap-1 flex-shrink-0">
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-black border-2 transition-colors ${
-                        level.level === 4
-                          ? "bg-[#C96442] border-[#C96442] text-white"
-                          : "bg-[#FAF9F5] border-[#D4CEC9] text-[#87867F]"
-                      }`}>
-                        {level.level === 4 ? "★" : level.level}
-                      </div>
-                      <span className={`text-[9px] font-semibold ${level.level === 4 ? "text-[#C96442]" : "text-[#87867F]"}`}>
-                        {level.level === 4 ? "MAX" : `Lv.${level.level}`}
-                      </span>
-                    </div>
-                    {idx < LEVELS.length - 1 && (
-                      <div className="flex-1 flex items-center mb-4 mx-1">
-                        <div className="flex-1 h-px bg-[#D4CEC9]" />
-                        <span className="text-[#D4CEC9] text-xs mx-0.5">›</span>
-                        <div className="flex-1 h-px bg-[#D4CEC9]" />
-                      </div>
-                    )}
-                  </Fragment>
-                ))}
-              </div>
-            </div>
-
             {/* レベルカード：縦一列 */}
             <div className="flex flex-col">
-              {LEVELS.map((info) => {
-                const isMax = info.level === 4;
+              {LEVELS.map((info, idx) => {
+                const isMax = info.level === highlightLevel;
                 return (
+                  <Fragment key={info.tag}>
                   <div
-                    key={info.tag}
-                    className={`relative px-6 py-4 border-b overflow-hidden ${
+                    className={`relative px-6 py-6 border-b overflow-hidden ${
                       isMax
                         ? "border-b-0 bg-[#FDF8F6] border-l-2 border-l-[#C96442]"
                         : "border-[#E8E6DC] bg-[#FAF9F5]"
                     }`}
                   >
-                    {/* 背景大文字 */}
-                    <div className={`absolute right-4 top-1/2 -translate-y-1/2 text-[5rem] font-black leading-none select-none pointer-events-none ${
-                      isMax ? "text-[#C96442] opacity-[0.06]" : "text-[#141413] opacity-[0.04]"
-                    }`}>
-                      {info.level}
-                    </div>
-
-                    <div className="relative flex items-start gap-3">
+                    <LevelStructureIcon level={info.level} />
+                    <div className="relative flex items-start gap-5">
                       {/* レベルバッジ */}
-                      <div className={`flex-shrink-0 w-9 h-9 rounded-lg flex items-center justify-center text-sm font-black ${
+                      <div className={`relative z-10 flex-shrink-0 w-12 h-12 rounded-xl flex items-end justify-center gap-0.5 font-bold pb-[11px] ${
                         isMax ? "bg-[#C96442] text-white" : "bg-[#EDEAE4] text-[#87867F]"
                       }`}>
-                        {isMax ? "★" : info.level}
+                        <span className="text-xs leading-none">Lv.</span>
+                        <span
+                          className="text-2xl leading-none"
+                          style={{ fontFamily: '"Hiragino Mincho ProN", "Yu Mincho", "YuMincho", "Noto Serif JP", serif' }}
+                        >
+                          {info.level}
+                        </span>
                       </div>
 
-                      <div className="flex-1 min-w-0">
+                      <div className="flex-1 min-w-0 pr-44">
                         <div className="flex items-center gap-2 mb-0.5">
                           <span className={`text-sm font-bold ${isMax ? "text-[#C96442]" : "text-[#141413]"}`}>
                             {info.tag}
                           </span>
-                          <LevelDots level={info.level} />
                         </div>
                         <p className="text-xs text-[#5E5D59] leading-relaxed mb-2">{info.desc}</p>
                         <div className="flex flex-col gap-0.5">
-                          <p className="text-[11px] text-[#87867F]">
-                            <span className="font-medium">条件</span> — {info.condition}
+                          <p className="text-[11px] font-medium text-[#5E5D59]">
+                            <span className="opacity-60">達成の基準</span> — {info.condition}
                           </p>
-                          <p className={`text-[11px] font-medium ${isMax ? "text-[#C96442]" : "text-[#5E5D59]"}`}>
-                            <span className="opacity-60">解放</span> — {UNLOCKS[info.level]}
+                          <p className="text-[11px] font-medium text-[#5E5D59]">
+                            <span className="opacity-60">獲得した能力</span> — {UNLOCKS[info.level]}
                           </p>
                           {info.nextStep && (
-                            <p className="text-[11px] text-[#C96442] mt-1">
-                              → {info.nextStep}
+                            <p className="text-[11px] text-[#C96442] mt-1 font-bold">
+                              → レベルアップのヒント：{info.nextStep}
                             </p>
                           )}
                         </div>
                       </div>
                     </div>
                   </div>
+                  </Fragment>
                 );
               })}
             </div>
@@ -164,7 +162,7 @@ export default function StructureGuide() {
               <div className="flex items-center gap-2 mb-4">
                 <div className="flex-1 h-px bg-[#D4CEC9]" />
                 <p className="text-[10px] text-[#87867F] font-bold tracking-[0.15em] whitespace-nowrap">
-                  ABILITIES — レベルとは独立して獲得
+                  ABILITIES ／ エージェントを上手に活用する能力
                 </p>
                 <div className="flex-1 h-px bg-[#D4CEC9]" />
               </div>

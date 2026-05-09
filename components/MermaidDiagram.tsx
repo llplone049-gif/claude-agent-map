@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import type { Dispatch, SetStateAction } from "react";
 
 export type AgentJsonEntry = {
@@ -145,7 +146,7 @@ const MERMAID_THEME = {
 interface TooltipState {
   x: number;
   y: number;
-  detail: AgentDetail & { roleName: string; model?: string };
+  detail: AgentDetail & { agentName: string; roleName: string; model?: string };
 }
 
 // Mermaid SVGのノードIDからエージェント名を抽出
@@ -178,7 +179,7 @@ function addTooltipListeners(
 
     node.addEventListener("mouseenter", (e) => {
       const me = e as MouseEvent;
-      setTooltip({ x: me.clientX, y: me.clientY, detail: { ...detail, roleName, model } });
+      setTooltip({ x: me.clientX, y: me.clientY, detail: { ...detail, agentName, roleName, model } });
     });
     node.addEventListener("mousemove", (e) => {
       const me = e as MouseEvent;
@@ -230,13 +231,13 @@ export default function MermaidDiagram({ chart, id, agentJson }: MermaidDiagramP
       {/* カード内の小さい図（クリックで拡大） */}
       <div
         ref={ref}
-        className="w-full overflow-x-auto cursor-zoom-in"
+        className="w-full h-full overflow-x-auto cursor-zoom-in flex items-center justify-center"
         title="クリックで拡大"
         onClick={() => svg && setIsOpen(true)}
       />
 
       {/* 拡大モーダル */}
-      {isOpen && (
+      {isOpen && typeof document !== "undefined" && createPortal(
         <div
           className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/60 backdrop-blur-sm"
           onClick={handleClose}
@@ -256,27 +257,28 @@ export default function MermaidDiagram({ chart, id, agentJson }: MermaidDiagramP
             </div>
             <div ref={modalContentRef} className="w-full overflow-auto" />
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* ホバーツールチップ */}
-      {tooltip && (
+      {tooltip && typeof document !== "undefined" && createPortal(
         <div
           className="fixed z-[9999] pointer-events-none"
           style={{ left: tooltip.x + 16, top: tooltip.y - 8 }}
         >
           <div className="bg-[#141413] text-[#FAF9F5] rounded-xl px-4 py-3 shadow-xl max-w-xs text-sm">
-            <div className="flex items-center gap-2 mb-2">
-              <p className="font-bold text-[#F0EEE6]">{tooltip.detail.roleName}</p>
-              {tooltip.detail.model && (
-                <span className="text-xs bg-[#30302E] text-[#87867F] border border-[#30302E] px-1.5 py-0.5 rounded">
+            <p className="font-bold text-[#F0EEE6] text-base mb-1.5">{tooltip.detail.agentName}</p>
+            <p className="text-[#B0AEA5] text-xs leading-relaxed mb-2 line-clamp-2">
+              {tooltip.detail.description || tooltip.detail.roleName}
+            </p>
+            {tooltip.detail.model && (
+              <div className="mb-1">
+                <span className="text-[10px] bg-[#30302E] text-[#87867F] border border-[#30302E] px-1.5 py-0.5 rounded">
                   {tooltip.detail.model}
                 </span>
-              )}
-            </div>
-            <p className="text-[#B0AEA5] text-xs leading-relaxed mb-2">
-              {tooltip.detail.description}
-            </p>
+              </div>
+            )}
             {tooltip.detail.tools.length > 0 && (
               <div className="mt-1">
                 <span className="text-[#87867F] text-xs">ツール: </span>
@@ -290,7 +292,8 @@ export default function MermaidDiagram({ chart, id, agentJson }: MermaidDiagramP
               </div>
             )}
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   );
