@@ -1,3 +1,4 @@
+import { Children } from "react";
 import type { AgentMapEntry } from "@/lib/notion";
 import MermaidDiagram from "./MermaidDiagram";
 import TagBadge from "./TagBadge";
@@ -18,14 +19,31 @@ function parseAgentJson(raw: string): Record<string, AgentJsonEntry> | undefined
 }
 
 function ScrollableTagRow({ children }: { children: React.ReactNode }) {
+  const items = Children.toArray(children);
+  // 5個以下は自然なflex-wrap（1〜2行）
+  if (items.length <= 5) {
+    return (
+      <div className="flex flex-wrap gap-x-1.5 gap-y-1.5">
+        {items}
+      </div>
+    );
+  }
+  // 6個以上は2行に分割して横スクロール
+  const half = Math.ceil(items.length / 2);
+  const row1 = items.slice(0, half);
+  const row2 = items.slice(half);
   return (
     <div className="relative -mr-5">
       <div
-        className="flex flex-wrap gap-x-1.5 gap-y-1.5 overflow-y-hidden pr-2 max-h-[3.5rem]"
+        className="overflow-x-auto pr-8 pb-1 [&::-webkit-scrollbar]:hidden"
+        style={{ scrollbarWidth: "none" }}
       >
-        {children}
+        <div className="flex flex-col gap-y-1.5 w-max">
+          <div className="flex gap-x-1.5">{row1}</div>
+          <div className="flex gap-x-1.5">{row2}</div>
+        </div>
       </div>
-      <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-[#FAF9F5] via-[#FAF9F5]/60 to-transparent" />
+      <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-10 bg-gradient-to-l from-[#FAF9F5] via-[#FAF9F5]/70 to-transparent" />
     </div>
   );
 }
