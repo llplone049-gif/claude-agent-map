@@ -11,13 +11,13 @@ const ABILITIES = STRUCTURE_LIST.filter((s) => s.level === 0);
 
 function LevelStructureIcon({ level }: { level: number }) {
   const src = `/icons/ag-${Math.min(level, 4)}.svg`;
-  const widthClass = level === 1 ? "w-20" : "w-40";
-  const rightClass = level === 1 ? "right-16" : "right-6";
+  const widthClass = level === 1 ? "sm:w-20" : "sm:w-40";
+  const rightClass = level === 1 ? "sm:right-16" : "sm:right-6";
   return (
     <img
       src={src}
       alt=""
-      className={`absolute ${rightClass} top-1/2 -translate-y-1/2 ${widthClass} h-auto opacity-50 pointer-events-none select-none`}
+      className={`hidden sm:block absolute ${rightClass} top-1/2 -translate-y-1/2 w-24 ${widthClass} h-auto opacity-50 pointer-events-none select-none`}
     />
   );
 }
@@ -69,9 +69,9 @@ export default function StructureGuide() {
     <>
       <button
         onClick={() => { setHighlightLevel(null); setOpen(true); }}
-        className="inline-flex items-center gap-2 text-sm text-white bg-[#D97757] hover:bg-[#C26642] rounded-full px-5 py-2.5 transition-colors font-medium whitespace-nowrap shadow-sm cursor-pointer"
+        className="inline-flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm text-white bg-[#D97757] hover:bg-[#C26642] rounded-full px-3 py-2 sm:px-5 sm:py-2.5 transition-colors font-medium whitespace-nowrap shadow-sm cursor-pointer shrink-0"
       >
-        <img src="/icons/level-mascot.svg" alt="" className="h-3.5 w-auto" />
+        <img src="/icons/level-mascot.svg" alt="" className="h-3 sm:h-3.5 w-auto" />
         育成ガイド
       </button>
 
@@ -85,14 +85,14 @@ export default function StructureGuide() {
             onClick={(e) => e.stopPropagation()}
           >
             {/* ヘッダー */}
-            <div className="bg-[#141413] px-6 py-5 relative overflow-hidden">
-              <div className="absolute right-12 top-1/2 -translate-y-1/2 flex items-end gap-3 opacity-20 pointer-events-none select-none">
+            <div className="bg-[#141413] px-5 sm:px-6 py-5 relative overflow-hidden">
+              <div className="hidden sm:flex absolute right-12 top-1/2 -translate-y-1/2 items-end gap-3 opacity-20 pointer-events-none select-none">
                 <img src="/icons/level-mascot-2.svg" alt="" className="h-12 w-auto" style={{ filter: "brightness(0) invert(0.4)" }} />
                 <img src="/icons/level-mascot-2.svg" alt="" className="h-20 w-auto" style={{ filter: "brightness(0) invert(0.4)" }} />
               </div>
               <p className="text-[10px] text-[#C96442] font-bold tracking-[0.2em] mb-1">Agent Level Guide</p>
-              <h2 className="text-white font-bold text-lg">エージェント育成ガイド</h2>
-              <p className="text-[#87867F] text-xs mt-1">エージェント構造の成熟度に応じてレベルアップしていきます</p>
+              <h2 className="text-white font-bold text-lg pr-8">エージェント育成ガイド</h2>
+              <p className="text-[#87867F] text-xs mt-1 pr-8">エージェント構造の成熟度に応じてレベルアップしていきます</p>
               <button
                 onClick={() => setOpen(false)}
                 className="absolute top-4 right-5 text-[#5E5D59] hover:text-white text-xl font-bold leading-none transition-colors"
@@ -108,14 +108,14 @@ export default function StructureGuide() {
                 return (
                   <Fragment key={info.tag}>
                   <div
-                    className={`relative px-6 py-6 border-b overflow-hidden ${
+                    className={`relative px-5 py-5 sm:px-6 sm:py-6 border-b overflow-hidden ${
                       isMax
                         ? "border-b-0 bg-[#FDF8F6] border-l-2 border-l-[#C96442]"
                         : "border-[#E8E6DC] bg-[#FAF9F5]"
                     }`}
                   >
                     <LevelStructureIcon level={info.level} />
-                    <div className="relative flex items-start gap-5">
+                    <div className="relative flex items-start gap-3 sm:gap-5">
                       {/* レベルバッジ */}
                       <div className={`relative z-10 flex-shrink-0 w-12 h-12 rounded-xl flex items-end justify-center gap-0.5 font-bold pb-[11px] ${
                         isMax ? "bg-[#C96442] text-white" : "bg-[#EDEAE4] text-[#87867F]"
@@ -129,7 +129,7 @@ export default function StructureGuide() {
                         </span>
                       </div>
 
-                      <div className="flex-1 min-w-0 pr-44">
+                      <div className="flex-1 min-w-0 pr-0 sm:pr-44">
                         <div className="flex items-center gap-2 mb-0.5">
                           <span className={`text-sm font-bold ${isMax ? "text-[#C96442]" : "text-[#141413]"}`}>
                             {info.tag}
