@@ -21,11 +21,11 @@ function ScrollableTagRow({ children }: { children: React.ReactNode }) {
   return (
     <div className="relative -mr-5">
       <div
-        className="flex flex-wrap gap-x-1.5 gap-y-1.5 overflow-y-hidden pr-10 max-h-[3.5rem]"
+        className="flex flex-wrap gap-x-1.5 gap-y-1.5 overflow-y-hidden pr-2 max-h-[3.5rem]"
       >
         {children}
       </div>
-      <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-[#FAF9F5] via-[#FAF9F5]/80 to-transparent" />
+      <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-[#FAF9F5] via-[#FAF9F5]/60 to-transparent" />
     </div>
   );
 }
