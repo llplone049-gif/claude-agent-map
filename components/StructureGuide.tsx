@@ -27,6 +27,9 @@ const ABILITY_ICONS: Record<string, string> = {
   "並列分散型": "⚡",
   "自律ループ型": "🔄",
   "ヒューマンインザループ": "👤",
+  "常時稼働型": "⏰",
+  "自己評価型": "🧪",
+  "配布可能型": "📦",
 };
 
 const UNLOCKS: Record<number, string> = {

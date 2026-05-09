@@ -8,6 +8,9 @@ const ABILITY_EMOJI: Record<string, string> = {
   "並列分散型": "⚡",
   "自律ループ型": "🔄",
   "ヒューマンインザループ": "👤",
+  "常時稼働型": "⏰",
+  "自己評価型": "🧪",
+  "配布可能型": "📦",
 };
 
 export default function TagBadge({ tag }: { tag: string }) {

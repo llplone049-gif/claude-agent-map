@@ -67,6 +67,27 @@ export const STRUCTURE_LIST: StructureInfo[] = [
     condition: "人間への確認・承認ステップが組み込まれている",
     desc: "AIが完全自律で動くのではなく、要所で人間の判断を挟む設計。品質・安全性を担保しながらAIを活用する現実的な構造。",
   },
+  {
+    tag: "常時稼働型",
+    level: 0,
+    color: "bg-yellow-100 text-yellow-800 border-yellow-300",
+    condition: "/loop・cron・Routines で常駐実行中のエージェントが1つ以上ある",
+    desc: "ヒトの起動指示を待たず、スケジュールやイベント駆動でエージェントが自走する設計。情報収集・監視・定型業務の完全自動化に向く。",
+  },
+  {
+    tag: "自己評価型",
+    level: 0,
+    color: "bg-pink-100 text-pink-800 border-pink-300",
+    condition: "生成と評価を別エージェントに分離した批評ループが組まれている",
+    desc: "Anthropic推奨の3エージェント構成（Plan/Generate/Evaluate）。生成側と評価側を切り離すことで、品質を自動的に押し上げるフィードバック構造。",
+  },
+  {
+    tag: "配布可能型",
+    level: 0,
+    color: "bg-indigo-100 text-indigo-800 border-indigo-300",
+    condition: "Skill / Plugin 形式でパッケージ化し、Git や Marketplace で配布している",
+    desc: "自分のエージェントやスキルを他環境でも再利用できる形に外出ししている設計。チーム共有・OSS化・社内資産化の入り口。",
+  },
 ];
 
 export const STRUCTURE_MAP = Object.fromEntries(
