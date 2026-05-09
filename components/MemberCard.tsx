@@ -1,4 +1,3 @@
-import { Children } from "react";
 import type { AgentMapEntry } from "@/lib/notion";
 import MermaidDiagram from "./MermaidDiagram";
 import TagBadge from "./TagBadge";
@@ -19,20 +18,12 @@ function parseAgentJson(raw: string): Record<string, AgentJsonEntry> | undefined
 }
 
 function ScrollableTagRow({ children }: { children: React.ReactNode }) {
-  const items = Children.toArray(children);
-  const half = Math.ceil(items.length / 2);
-  const row1 = items.slice(0, half);
-  const row2 = items.slice(half);
   return (
     <div className="relative -mr-5">
       <div
-        className="overflow-x-auto pr-10 pb-1 [&::-webkit-scrollbar]:hidden"
-        style={{ scrollbarWidth: "none" }}
+        className="flex flex-wrap gap-x-1.5 gap-y-1.5 overflow-y-hidden pr-10 max-h-[3.5rem]"
       >
-        <div className="flex flex-col gap-y-1.5 w-max">
-          <div className="flex gap-x-1.5">{row1}</div>
-          {row2.length > 0 && <div className="flex gap-x-1.5">{row2}</div>}
-        </div>
+        {children}
       </div>
       <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-[#FAF9F5] via-[#FAF9F5]/80 to-transparent" />
     </div>
