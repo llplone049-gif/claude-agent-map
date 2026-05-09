@@ -13,10 +13,9 @@ export default async function Home() {
       <header className="px-6 pt-8 pb-6 border-b border-[#E8E6DC]">
         <div className="max-w-6xl mx-auto flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <h1 className="text-xl sm:text-2xl font-bold tracking-tight">
-              <span className="text-[#D97757] whitespace-nowrap">ClaudeCode</span>
-              <span className="hidden sm:inline text-[#141413]"> Agent Map</span>
-              <span className="sm:hidden text-[#141413] block whitespace-nowrap">Agent Map</span>
+            <h1 className="text-base sm:text-2xl font-bold tracking-tight whitespace-nowrap">
+              <span className="text-[#D97757]">ClaudeCode</span>
+              <span className="text-[#141413]"> Agent Map</span>
             </h1>
             <p className="text-[#5E5D59] text-[11px] sm:text-sm mt-0.5 whitespace-nowrap">
               チームのエージェント構造を可視化・共有する
