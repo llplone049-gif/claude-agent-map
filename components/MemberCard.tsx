@@ -21,8 +21,8 @@ function ScrollableTagRow({ children }: { children: React.ReactNode }) {
   return (
     <div className="relative -mr-5">
       <div
-        className="flex flex-col flex-wrap content-start gap-x-1.5 gap-y-1.5 overflow-x-auto overflow-y-hidden pr-10 pb-1 max-h-[3.25rem] [&::-webkit-scrollbar]:hidden"
-        style={{ scrollbarWidth: "none" }}
+        className="grid grid-flow-col grid-rows-2 gap-x-1.5 gap-y-1.5 overflow-x-auto overflow-y-hidden pr-10 pb-1 [&>*]:w-max [&::-webkit-scrollbar]:hidden"
+        style={{ scrollbarWidth: "none", gridAutoColumns: "max-content" }}
       >
         {children}
       </div>
