@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ClaudeCode Agent Map — セットアップガイド</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, "Hiragino Sans", "Yu Gothic", sans-serif;
+      background: #F5EDE0;
+      color: #2D1F0E;
+      line-height: 1.7;
+      padding: 48px 24px;
+    }
+
+    .page {
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    /* ヘッダー */
+    .header {
+      background: #2D1F0E;
+      border-radius: 20px;
+      padding: 36px 40px;
+      margin-bottom: 32px;
+      color: #FAF6EE;
+    }
+
+    .header .label {
+      font-size: 12px;
+      color: #B8986A;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .header h1 {
+      font-size: 28px;
+      font-weight: 800;
+      line-height: 1.3;
+      margin-bottom: 12px;
+    }
+
+    .header h1 span {
+      color: #D4671B;
+    }
+
+    .header p {
+      font-size: 14px;
+      color: #C8A882;
+      line-height: 1.7;
+    }
+
+    .header .url-box {
+      margin-top: 20px;
+      background: #1A1208;
+      border-radius: 12px;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .header .url-box .url-label {
+      font-size: 11px;
+      color: #B8986A;
+      white-space: nowrap;
+    }
+
+    .header .url-box a {
+      color: #D4671B;
+      font-size: 15px;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    /* セクション */
+    .section {
+      background: #FFFDF8;
+      border: 1px solid #E2D0BA;
+      border-radius: 16px;
+      padding: 28px 32px;
+      margin-bottom: 20px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .step-badge {
+      background: #D4671B;
+      color: white;
+      font-size: 12px;
+      font-weight: 700;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .section h2 {
+      font-size: 17px;
+      font-weight: 700;
+      color: #2D1F0E;
+    }
+
+    .section p {
+      font-size: 14px;
+      color: #5A3F28;
+      margin-bottom: 12px;
+    }
+
+    .section p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* コードブロック */
+    .code-block {
+      background: #F0E4D0;
+      border: 1px solid #DFC9A8;
+      border-radius: 10px;
+      padding: 14px 18px;
+      margin: 12px 0;
+      font-family: "SF Mono", "Menlo", monospace;
+      font-size: 13px;
+      color: #2D1F0E;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    .code-inline {
+      background: #F0E4D0;
+      border: 1px solid #DFC9A8;
+      border-radius: 5px;
+      padding: 2px 7px;
+      font-family: "SF Mono", "Menlo", monospace;
+      font-size: 13px;
+      color: #7A3F10;
+    }
+
+    /* 注意書き */
+    .note {
+      background: #FFF8EE;
+      border-left: 3px solid #D4671B;
+      border-radius: 0 8px 8px 0;
+      padding: 12px 16px;
+      font-size: 13px;
+      color: #7A5C3A;
+      margin: 12px 0;
+    }
+
+    /* チェックリスト */
+    .checklist {
+      list-style: none;
+      margin: 12px 0;
+    }
+
+    .checklist li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 14px;
+      color: #5A3F28;
+      padding: 6px 0;
+      border-bottom: 1px dashed #E8D8C0;
+    }
+
+    .checklist li:last-child {
+      border-bottom: none;
+    }
+
+    .checklist li::before {
+      content: "□";
+      color: #D4671B;
+      font-size: 16px;
+      margin-top: -1px;
+      flex-shrink: 0;
+    }
+
+    /* FAQセクション */
+    .faq-item {
+      padding: 14px 0;
+      border-bottom: 1px solid #E8D8C0;
+    }
+
+    .faq-item:last-child {
+      border-bottom: none;
+    }
+
+    .faq-q {
+      font-size: 14px;
+      font-weight: 700;
+      color: #D4671B;
+      margin-bottom: 6px;
+    }
+
+    .faq-a {
+      font-size: 14px;
+      color: #5A3F28;
+    }
+
+    /* コマンド強調 */
+    .command-highlight {
+      background: #2D1F0E;
+      color: #F0DEC4;
+      border-radius: 10px;
+      padding: 16px 20px;
+      font-family: "SF Mono", "Menlo", monospace;
+      font-size: 18px;
+      font-weight: 700;
+      text-align: center;
+      margin: 16px 0;
+      letter-spacing: 0.05em;
+    }
+
+    .command-highlight span {
+      color: #D4671B;
+    }
+
+    /* 必要なもの */
+    .requirement-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid #E8D8C0;
+      font-size: 14px;
+      color: #5A3F28;
+    }
+
+    .requirement-item:last-child {
+      border-bottom: none;
+    }
+
+    .req-icon {
+      width: 32px;
+      height: 32px;
+      background: #F0E4D0;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    /* ファイルリスト */
+    .file-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid #E8D8C0;
+    }
+
+    .file-item:last-child {
+      border-bottom: none;
+    }
+
+    .file-name {
+      font-family: "SF Mono", "Menlo", monospace;
+      font-size: 13px;
+      color: #7A3F10;
+      background: #F0E4D0;
+      border: 1px solid #DFC9A8;
+      border-radius: 6px;
+      padding: 3px 8px;
+      white-space: nowrap;
+    }
+
+    .file-desc {
+      font-size: 13px;
+      color: #5A3F28;
+      padding-top: 2px;
+    }
+
+    /* フッター */
+    .footer {
+      text-align: center;
+      color: #B8986A;
+      font-size: 12px;
+      margin-top: 32px;
+      padding-top: 20px;
+      border-top: 1px solid #E2D0BA;
+    }
+
+    /* 印刷用 */
+    @media print {
+      body { background: white; padding: 20px; }
+      .header { background: #2D1F0E !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .section { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+
+    <!-- ヘッダー -->
+    <div class="header">
+      <div class="label">CC-Company 内部ツール</div>
+      <h1><span>ClaudeCode</span> Agent Map<br>セットアップガイド</h1>
+      <p>チームのエージェント構造を可視化・共有するツールです。<br>自分の Claude Code の使い方をスキャンして、チームページに自動投稿できます。</p>
+      <div class="url-box">
+        <span class="url-label">チームページ</span>
+        <a href="https://claude-agent-map-web.vercel.app">https://claude-agent-map-web.vercel.app</a>
+      </div>
+    </div>
+
+    <!-- 必要なもの -->
+    <div class="section">
+      <div class="section-header">
+        <div class="step-badge">✓</div>
+        <h2>はじめる前に確認すること</h2>
+      </div>
+      <div class="requirement-item">
+        <div class="req-icon">💻</div>
+        <div>
+          <strong>Claude Code</strong> がインストールされていること<br>
+          <span style="font-size:12px;color:#9A7A5A;">ターミナルで <code class="code-inline">claude</code> と打てれば OK</span>
+        </div>
+      </div>
+      <div class="requirement-item">
+        <div class="req-icon">📦</div>
+        <div>
+          <strong>永峰から受け取ったファイル</strong> が手元にあること<br>
+          <span style="font-size:12px;color:#9A7A5A;"><code class="code-inline">agentmap</code> フォルダと <code class="code-inline">セットアップ用プロンプト.md</code> の2点です</span>
+        </div>
+      </div>
+      <div class="requirement-item">
+        <div class="req-icon">🔑</div>
+        <div>
+          <strong>Notion API キー</strong> を永峰からもらっていること<br>
+          <span style="font-size:12px;color:#9A7A5A;">セットアップ中に入力する場面があります</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 1 -->
+    <div class="section">
+      <div class="section-header">
+        <div class="step-badge">1</div>
+        <h2>agentmap フォルダの中身を .claude に移動する</h2>
+      </div>
+      <p>永峰からもらった <code class="code-inline">agentmap</code> フォルダを開くと、中に2つのフォルダが入っています。</p>
+      <div style="background:#F0E4D0;border:1px solid #DFC9A8;border-radius:12px;padding:16px 20px;margin:12px 0;font-size:13px;color:#5A3F28;line-height:2;">
+        <strong>agentmap/</strong>（永峰からもらったフォルダ）<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;├── commands/<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;└── agent-map/
+      </div>
+      <p>この2つのフォルダを、自分のプロジェクトの <code class="code-inline">.claude/</code> フォルダの中にコピーします。</p>
+      <div style="background:#F0E4D0;border:1px solid #DFC9A8;border-radius:12px;padding:16px 20px;margin:12px 0;font-size:13px;color:#5A3F28;line-height:2;">
+        <strong>自分のプロジェクトフォルダ/</strong><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;└── .claude/<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── <span style="color:#D4671B;font-weight:700;">commands/</span> &nbsp;← ここにコピー<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── <span style="color:#D4671B;font-weight:700;">agent-map/</span> &nbsp;← ここにコピー
+      </div>
+      <div class="note">
+        Finderで <code class="code-inline">.claude</code> フォルダが見えない場合は <strong>Cmd + Shift + .</strong> で隠しファイルを表示できます。<br>
+        <code class="code-inline">.claude</code> フォルダがまだない場合は、新規フォルダを作って名前を <code class="code-inline">.claude</code> にしてください。
+      </div>
+    </div>
+
+    <!-- Step 2 -->
+    <div class="section">
+      <div class="section-header">
+        <div class="step-badge">2</div>
+        <h2>Claude Code でセットアップを実行する</h2>
+      </div>
+      <p>自分のプロジェクトで Claude Code を開いて、<code class="code-inline">セットアップ用プロンプト.md</code> の中身を<strong>そのままコピーして貼り付ける</strong>だけです。</p>
+      <ul class="checklist">
+        <li>名前の設定（初回のみ）</li>
+        <li>Notion API キーの設定（Claude Code が聞いてくれます）</li>
+        <li>動作確認・チームページへの初回投稿</li>
+      </ul>
+      <div class="note">
+        Claude Code がすべての手順をエスコートしてくれます。指示に従って答えるだけで完了します。
+      </div>
+    </div>
+
+    <!-- Step 3 -->
+    <div class="section">
+      <div class="section-header">
+        <div class="step-badge">3</div>
+        <h2>次回から</h2>
+      </div>
+      <p>Claude Code を開いたら、以下のコマンドを入力するだけで更新できます：</p>
+      <div class="command-highlight"><span>/</span>agent-map</div>
+      <ul class="checklist">
+        <li>エージェント名・役割・使用ツール・トークン数のみ共有されます</li>
+        <li>プロンプトの内容・MDファイルの中身は一切送信されません</li>
+        <li>約5分後にチームページに反映されます</li>
+      </ul>
+    </div>
+
+    <!-- FAQ -->
+    <div class="section">
+      <div class="section-header">
+        <div class="step-badge">?</div>
+        <h2>よくある質問</h2>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">どのくらいの頻度で実行すればいい？</div>
+        <div class="faq-a">Claude Code を開くたびに実行するのがベストです。トークン数はその時点のスナップショットなので、まめに更新するほどチームの状況がリアルに反映されます。</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">毎回忘れずに実行するには？</div>
+        <div class="faq-a">
+          Claude Code の設定ファイルにフック（自動実行）を追加するのがおすすめです。<br>
+          プロジェクトの <code class="code-inline">.claude/settings.json</code> に以下を追加すると、セッション開始時に自動で <code class="code-inline">/agent-map</code> を実行するよう Claude Code に指示できます：
+          <div class="code-block">{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo 'Agent Map の更新タイムです！/agent-map を実行してください'"
+          }
+        ]
+      }
+    ]
+  }
+}</div>
+          設定すると、セッション開始時にリマインダーが自動で表示されます。<br>
+          <span style="color:#9A7A5A;font-size:12px;">※ フック設定がわからなければ永峰に聞いてください。</span>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">エージェントを使っていなくても参加できる？</div>
+        <div class="faq-a">もちろんです！エージェント0体でも投稿できます。</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">うまくいかない場合は？</div>
+        <div class="faq-a">永峰に声をかけてください。一緒にセットアップします。</div>
+      </div>
+    </div>
+
+    <!-- フッター -->
+    <div class="footer">
+      ClaudeCode Agent Map v1.0 — CC-Company 内部ツール<br>
+      プロンプトやファイル内容は共有されません。
+    </div>
+
+  </div>
+</body>
+</html>
