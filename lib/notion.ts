@@ -26,38 +26,113 @@ const MOCK_DATA: AgentMapEntry[] = [
   {
     id: "mock-kirari",
     member: "きらり",
-    updatedAt: "2026-04-07",
-    agentCount: 9,
+    updatedAt: "2026-05-11",
+    agentCount: 23,
     structureType: "フル・ハーネス設計",
-    tags: ["フル・ハーネス設計", "MCP統合型", "並列分散型", "自律ループ型", "ヒューマンインザループ"],
-    capabilities: ["note記事作成", "SNSリサーチ", "議事録自動登録", "画像プロンプト生成"],
+    tags: ["フル・ハーネス設計", "MCP統合型", "並列分散型", "自律ループ型", "ヒューマンインザループ", "自己評価型"],
+    capabilities: ["note記事作成", "SNSリサーチ", "議事録自動登録", "画像プロンプト生成", "AI導入コンサル支援"],
     model: "Sonnet",
     mcpServers: "notionApi: タスク管理・議事録・エージェントマップ保存, playwright: Webブラウザ操作・スクレイピング, obsidian: インスピレーションメモの自動取り込み",
-    weekTokens: 0,
-    monthTokens: 0,
+    weekTokens: 12909703,
+    monthTokens: 22926698,
     mermaid: `graph TD
     User((ユーザー))
     User --> secretary[secretary]
     secretary --> planner[planner]
+    planner --> aidx-pm[aidx-pm]
     planner --> ainstein-pm[ainstein-pm]
-    planner --> allight-pm[allight-pm]
+    planner --> hadoiryo-pm[hadoiryo-pm]
+    planner --> web-pm[web-pm]
+    aidx-pm --> aidx-analyst[aidx-analyst]
+    aidx-pm --> aidx-architect[aidx-architect]
+    aidx-pm --> aidx-researcher[aidx-researcher]
+    aidx-pm --> aidx-writer[aidx-writer]
     ainstein-pm --> ainstein-researcher[ainstein-researcher]
     ainstein-pm --> ainstein-writer[ainstein-writer]
     ainstein-pm --> ainstein-image-designer[ainstein-image-designer]
-    allight-pm --> allight-researcher[allight-researcher]
-    allight-pm --> allight-writer[allight-writer]
-    allight-pm --> allight-image-designer[allight-image-designer]`,
+    hadoiryo-pm --> hadoiryo-analyst[hadoiryo-analyst]
+    hadoiryo-pm --> hadoiryo-researcher[hadoiryo-researcher]
+    hadoiryo-pm --> hadoiryo-writer[hadoiryo-writer]
+    web-pm --> web-frontend[web-frontend]
+    web-pm --> web-backend[web-backend]
+    web-pm --> web-qa[web-qa]`,
     agentJson: JSON.stringify({
-      secretary: { role: "AI秘書・司令塔", model: "Sonnet" },
-      planner: { role: "全PJ横断プランナー", model: "Sonnet" },
-      "ainstein-pm": { role: "AI.NSTEIN PM", model: "Opus" },
-      "allight-pm": { role: "ALLIGHT. PM", model: "Opus" },
-      "ainstein-researcher": { role: "AI.NSTEIN専用リサーチャー", model: "Haiku" },
-      "allight-researcher": { role: "ALLIGHT.専用リサーチャー", model: "Haiku" },
-      "ainstein-writer": { role: "AI.NSTEINライター", model: "Sonnet" },
-      "allight-writer": { role: "ALLIGHT.ライター", model: "Sonnet" },
-      "ainstein-image-designer": { role: "AI.NSTEIN画像プロンプト設計", model: "Sonnet" },
-      "allight-image-designer": { role: "ALLIGHT.画像プロンプト設計", model: "Sonnet" },
+      secretary: { role: "AI秘書・司令塔", model: "Sonnet", tools: [], calls: ["planner"] },
+      planner: { role: "全PJ横断プランナー", model: "Sonnet", tools: ["Read","Glob","Grep"], calls: ["aidx-pm","ainstein-pm","hadoiryo-pm","web-pm"] },
+    }),
+    isPublic: true,
+  },
+  {
+    id: "mock-hide",
+    member: "ヒデさん",
+    updatedAt: "2026-05-10",
+    agentCount: 5,
+    structureType: "ハーネス設計",
+    tags: ["ハーネス設計", "MCP統合型", "並列分散型"],
+    capabilities: ["情報収集自動化", "Obsidian管理", "Chatwork社内共有", "YouTube要約"],
+    model: "Sonnet",
+    mcpServers: "obsidian: 情報プール管理, chatwork: 社内共有, youtube: 動画情報収集",
+    weekTokens: 3240000,
+    monthTokens: 8100000,
+    mermaid: `graph TD
+    User((ユーザー))
+    User --> info-collector[info-collector]
+    info-collector --> youtube-watcher[youtube-watcher]
+    info-collector --> x-monitor[x-monitor]
+    info-collector --> obsidian-writer[obsidian-writer]
+    obsidian-writer --> chatwork-reporter[chatwork-reporter]`,
+    agentJson: JSON.stringify({
+      "info-collector": { role: "情報収集コーディネーター", model: "Sonnet", tools: ["Agent"], calls: ["youtube-watcher","x-monitor","obsidian-writer"] },
+      "youtube-watcher": { role: "YouTube動画監視・要約", model: "Haiku", tools: ["WebFetch"], calls: [] },
+      "x-monitor": { role: "X投稿監視・収集", model: "Haiku", tools: ["WebSearch"], calls: [] },
+      "obsidian-writer": { role: "Obsidian情報プール書き込み", model: "Sonnet", tools: ["Write"], calls: ["chatwork-reporter"] },
+      "chatwork-reporter": { role: "Chatwork社内レポート配信", model: "Haiku", tools: [], calls: [] },
+    }),
+    isPublic: true,
+  },
+  {
+    id: "mock-tamotsu",
+    member: "保さん",
+    updatedAt: "2026-05-09",
+    agentCount: 3,
+    structureType: "マルチエージェント",
+    tags: ["マルチエージェント", "自律ループ型"],
+    capabilities: ["感性エンジン分析", "企業診断レポート", "AI戦略提案"],
+    model: "Opus",
+    mcpServers: "notionApi: 提案書管理",
+    weekTokens: 1820000,
+    monthTokens: 5400000,
+    mermaid: `graph TD
+    User((ユーザー))
+    User --> beta-core[beta-core]
+    beta-core --> persona-analyzer[persona-analyzer]
+    beta-core --> strategy-writer[strategy-writer]`,
+    agentJson: JSON.stringify({
+      "beta-core": { role: "感性エンジン統括・ベータAI中枢", model: "Opus", tools: ["Agent"], calls: ["persona-analyzer","strategy-writer"] },
+      "persona-analyzer": { role: "個人・企業・現場の3層感性分析", model: "Sonnet", tools: ["Read","WebFetch"], calls: [] },
+      "strategy-writer": { role: "AI戦略提案書ライター", model: "Sonnet", tools: ["Write"], calls: [] },
+    }),
+    isPublic: true,
+  },
+  {
+    id: "mock-guts",
+    member: "ガッツさん",
+    updatedAt: "2026-05-08",
+    agentCount: 2,
+    structureType: "シンプル",
+    tags: ["シンプル"],
+    capabilities: ["動画企画補佐", "SNS投稿文作成"],
+    model: "Sonnet",
+    mcpServers: "",
+    weekTokens: 480000,
+    monthTokens: 1200000,
+    mermaid: `graph TD
+    User((ユーザー))
+    User --> content-planner[content-planner]
+    content-planner --> sns-writer[sns-writer]`,
+    agentJson: JSON.stringify({
+      "content-planner": { role: "動画・SNSコンテンツ企画", model: "Sonnet", tools: ["WebSearch"], calls: ["sns-writer"] },
+      "sns-writer": { role: "SNS投稿文ライター", model: "Sonnet", tools: [], calls: [] },
     }),
     isPublic: true,
   },
@@ -123,7 +198,7 @@ export async function getAgentMaps(): Promise<AgentMapEntry[]> {
           agentCount,
           structureType,
           tags,
-          capabilities: rt("できること").split(",").map((s: string) => s.trim()).filter(Boolean),
+          capabilities: rt("できること").split(/[,、・\n]/).map((s: string) => s.replace(/^[•・\s]+/, "").trim()).filter(Boolean),
           model: sel("使用モデル"),
           mcpServers,
           mermaid: rt("Mermaid図"),

@@ -110,7 +110,7 @@ export default function MemberCard({ entry, levelOverride }: { entry: AgentMapEn
             {entry.capabilities.map((cap) => (
               <span
                 key={cap}
-                className="inline-block text-[11px] bg-[#F2EFE8] text-[#7A7A7A] px-2.5 py-0.5 rounded-full cursor-default whitespace-nowrap"
+                className="inline-block text-[11px] bg-[#F2EFE8] text-[#7A7A7A] px-2.5 py-0.5 rounded-full cursor-default break-words"
               >
                 {cap}
               </span>
