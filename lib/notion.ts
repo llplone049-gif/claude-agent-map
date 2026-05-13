@@ -198,7 +198,7 @@ export async function getAgentMaps(): Promise<AgentMapEntry[]> {
           agentCount,
           structureType,
           tags,
-          capabilities: rt("できること").split(/[,、・\n]/).map((s: string) => s.replace(/^[•・\s]+/, "").trim()).filter(Boolean),
+          capabilities: rt("できること").split(/[,、\n]/).map((s: string) => s.replace(/^[\s\-•・]+/, "").trim()).filter(Boolean),
           model: sel("使用モデル"),
           mcpServers,
           mermaid: rt("Mermaid図"),
