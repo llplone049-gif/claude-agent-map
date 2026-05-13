@@ -17,7 +17,7 @@ export default function McpTag({ name, desc }: { name: string; desc: string }) {
       className="relative inline-flex items-center gap-1 text-[11px] bg-[#F2F0E8] text-[#9D8E5A] border border-[#E0DCCC] px-2 py-0.5 rounded-md cursor-default select-none whitespace-nowrap font-medium"
     >
       {name}
-      <span className="opacity-50 text-[10px]">ⓘ</span>
+      {desc && <span className="opacity-50 text-[10px]">ⓘ</span>}
       {desc && pos && (
         <span
           className="fixed z-50 pointer-events-none"

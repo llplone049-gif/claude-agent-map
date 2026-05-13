@@ -55,14 +55,14 @@ export default function MemberCard({ entry, levelOverride }: { entry: AgentMapEn
 
   const mcpItems = entry.mcpServers
     ? entry.mcpServers
-        .split(",")
-        .map((s) => s.trim())
+        .split(/[,、\n]/)
+        .map((s) => s.replace(/^[\s•・\-]+/, "").trim())
         .filter(Boolean)
         .map((s) => {
           const colonIdx = s.indexOf(": ");
           return {
-            name: colonIdx >= 0 ? s.slice(0, colonIdx) : s,
-            desc: colonIdx >= 0 ? s.slice(colonIdx + 2) : "",
+            name: colonIdx >= 0 ? s.slice(0, colonIdx).trim() : s,
+            desc: colonIdx >= 0 ? s.slice(colonIdx + 2).trim() : "",
           };
         })
     : [];
